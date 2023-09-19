@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types';
 
+import { ButtonStyle } from './Button.styled';
+
 export const Button = ({ onClick, shouldRender }) => {
   return shouldRender ? (
-    <button type="button" onClick={onClick}>
+    <ButtonStyle type="button" onClick={onClick}>
       Load more
-    </button>
+    </ButtonStyle>
   ) : null;
 };
 

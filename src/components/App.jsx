@@ -3,9 +3,10 @@ import { GlobalStyles } from './GlobalStyles/GlobalStyles';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { ImageGalleryItem } from './ImageGalleryItem/ImageGalleryItem';
-import { searchImages } from './Api/Api';
 import { Button } from './Button/Button';
 import { Loader } from './Loader/Loader';
+import { Modal } from './Modal/Modal';
+import { searchImages } from './Api/Api';
 import Notiflix from 'notiflix';
 
 export class App extends Component {
@@ -16,12 +17,17 @@ export class App extends Component {
     shouldRenderButton: false,
     perPage: 12,
     isLoading: false,
-    // showModal: false,
-    // selectedImage: {},
+    isModalOpen: false,
+    selectedImage: {},
   };
+
+  // Update query for Load More
+
   updateQuery = query => {
     this.setState({ query });
   };
+
+  // Main Request Function
 
   onSubmit = async query => {
     await new Promise(resolve => {
@@ -53,15 +59,14 @@ export class App extends Component {
           "We're sorry, but you've reached the end of search results."
         );
       }
-      console.log(shouldRenderButton);
-      console.log(data);
-      console.log(currentPage);
     } catch (error) {
       console.error('Error fetching images:', error);
     } finally {
       this.setState({ isLoading: false });
     }
   };
+
+  // Load More Function
 
   loadMoreImages = async () => {
     const { query, currentPage, perPage } = this.state;
@@ -84,7 +89,6 @@ export class App extends Component {
         currentPage: nextPage,
         shouldRenderButton,
       }));
-      console.log(nextPage);
     } catch (error) {
       console.error('Error fetching images:', error);
     } finally {
@@ -92,23 +96,47 @@ export class App extends Component {
     }
   };
 
+  // Open Modal Function
+
+  openModal = image => {
+    this.setState({ isModalOpen: true, selectedImage: image });
+  };
+
+  // Close  Modal Function
+
+  closeModal = () => {
+    this.setState({ isModalOpen: false, selectedImage: {} });
+  };
+
+  // Main Render
+
   render() {
-    const { isLoading } = this.state;
+    const { isLoading, isModalOpen, selectedImage } = this.state;
     return (
       <>
         <GlobalStyles />
         <Searchbar onSubmit={this.onSubmit} updateQuery={this.updateQuery} />
 
         <ImageGallery>
-          <ImageGalleryItem images={this.state.images} />
-          {isLoading ? <Loader /> : null}
+          <ImageGalleryItem
+            images={this.state.images}
+            openModal={this.openModal}
+          />
         </ImageGallery>
+        {isLoading ? <Loader /> : null}
         {!isLoading ? (
           <Button
             onClick={this.loadMoreImages}
             shouldRender={this.state.shouldRenderButton}
           />
         ) : null}
+        {isModalOpen && Object.keys(selectedImage).length > 0 && (
+          <Modal
+            isOpen={this.state.isModalOpen}
+            image={this.state.selectedImage}
+            onClose={this.closeModal}
+          />
+        )}
       </>
     );
   }

@@ -1,15 +1,22 @@
 import PropTypes from 'prop-types';
+import {
+  ImageGalleryItemStyle,
+  ImageGalleryItemImage,
+} from './ImageGalleryItem.styled';
 
-export const ImageGalleryItem = ({ images }) => {
+export const ImageGalleryItem = ({ images, openModal }) => {
   return images.map(image => (
-    <li key={image.id} className="gallery-item">
-      <a href={image.largeImageURL}>
-        <img src={image.webformatURL} alt={image.tags} />
-      </a>
-    </li>
+    <ImageGalleryItemStyle key={image.id}>
+      <ImageGalleryItemImage
+        src={image.webformatURL}
+        alt={image.tags}
+        onClick={() => openModal(image)}
+      />
+    </ImageGalleryItemStyle>
   ));
 };
 
 ImageGalleryItem.propTypes = {
   images: PropTypes.array.isRequired,
+  openModal: PropTypes.func.isRequired,
 };

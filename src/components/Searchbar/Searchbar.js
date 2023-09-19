@@ -13,12 +13,16 @@ export class Searchbar extends Component {
     query: '',
   };
 
+  // Changing state Function after input change
+
   handleChange = e => {
     const query = e.target.value;
     this.setState({ query }, () => {
       this.props.updateQuery(query);
     });
   };
+
+  // Submit of request
 
   handleSubmit = e => {
     e.preventDefault();
@@ -34,10 +38,8 @@ export class Searchbar extends Component {
     return (
       <Header>
         <SearchForm onSubmit={this.handleSubmit}>
-          <SearchFormButton type="submit">
-            <ButtonLabel role="img" aria-label="Search">
-              &#128269;
-            </ButtonLabel>
+          <SearchFormButton type="submit" aria-label="Search">
+            <ButtonLabel>&#128269;</ButtonLabel>
           </SearchFormButton>
 
           <SearchFormInput
@@ -53,6 +55,8 @@ export class Searchbar extends Component {
     );
   }
 }
+
+// propTypes
 
 Searchbar.propTypes = {
   onSubmit: PropTypes.func.isRequired,
